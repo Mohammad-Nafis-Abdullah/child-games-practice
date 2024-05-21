@@ -1,0 +1,74 @@
+[
+    {
+        "_id": "664b4941ca1af98259b13537",
+        "category_id": 1,
+        "img": "/images/cat.jpg",
+        "name": "cat"
+    },
+    {
+        "_id": "664b49412007376035c5fea5",
+        "category_id": 1,
+        "img": "/images/cat.jpg",
+        "name": "cat"
+    },
+    {
+        "_id": "664b4941a645cfff08313800",
+        "category_id": 2,
+        "img": "/images/cow.jpg",
+        "name": "cow"
+    },
+    {
+        "_id": "664b494165ff7a6e0db2a752",
+        "category_id": 2,
+        "img": "/images/cow.jpg",
+        "name": "cow"
+    },
+    {
+        "_id": "664b4941b4e7e2c5a5ee5712",
+        "category_id": 3,
+        "img": "/images/dog.webp",
+        "name": "dog"
+    },
+    {
+        "_id": "664b4941bfaa4914462da321",
+        "category_id": 3,
+        "img": "/images/dog.webp",
+        "name": "dog"
+    },
+    {
+        "_id": "664b49419e055ec2a1e19643",
+        "category_id": 4,
+        "img": "/images/giraffe.webp",
+        "name": "giraffe"
+    },
+    {
+        "_id": "664b494128f22ad4c0ef2e8e",
+        "category_id": 4,
+        "img": "/images/giraffe.webp",
+        "name": "giraffe"
+    },
+    {
+        "_id": "664b4941e6f679896de435ba",
+        "category_id": 5,
+        "img": "/images/goat.jpg",
+        "name": "goat"
+    },
+    {
+        "_id": "664b4941c83bb6872e566641",
+        "category_id": 5,
+        "img": "/images/goat.jpg",
+        "name": "goat"
+    },
+    {
+        "_id": "664b4941f5e53907c860c8dd",
+        "category_id": 6,
+        "img": "/images/horse.webp",
+        "name": "horse"
+    },
+    {
+        "_id": "664b4941358e78e1ee91b88d",
+        "category_id": 6,
+        "img": "/images/horse.webp",
+        "name": "horse"
+    }
+]
