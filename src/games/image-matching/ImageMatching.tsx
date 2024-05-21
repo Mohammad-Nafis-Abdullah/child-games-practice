@@ -11,7 +11,7 @@ import {
     useDisclosure,
 } from "@chakra-ui/react";
 import useImageData, { data_schema } from "../../hooks/useImageData";
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import ReactCardFlip from "react-card-flip";
 import { FaRegCheckCircle } from "react-icons/fa";
 
@@ -35,6 +35,7 @@ const generate_random_numbers = (length = 0) => {
 
 const ImageMatching = () => {
     const { data } = useImageData();
+    const [suffled, setSuffled] = useState(false);
 
     const [select_1_id, setSelect_1_id] = useState<string[]>([]);
     const [select_2_id, setSelect_2_id] = useState<string[]>([]);
@@ -69,7 +70,7 @@ const ImageMatching = () => {
 
     const generate_random_indexes = useMemo(() => {
         return generate_random_numbers(12);
-    }, []);
+    }, [suffled]);
 
     return (
         <>
@@ -108,6 +109,7 @@ const ImageMatching = () => {
                 select_2_id={select_2_id}
                 setSelect_1_id={setSelect_1_id}
                 setSelect_2_id={setSelect_2_id}
+                setSuffled={setSuffled}
             />
         </>
     );
@@ -223,11 +225,13 @@ const GratingsModal = ({
     select_2_id,
     setSelect_1_id,
     setSelect_2_id,
+    setSuffled,
 }: {
     select_1_id: string[];
     select_2_id: string[];
     setSelect_1_id: React.Dispatch<React.SetStateAction<string[]>>;
     setSelect_2_id: React.Dispatch<React.SetStateAction<string[]>>;
+    setSuffled: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -238,7 +242,7 @@ const GratingsModal = ({
             onClose();
         }
     }, [select_1_id, select_2_id]);
-    
+
     return (
         <>
             <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -248,6 +252,7 @@ const GratingsModal = ({
                         onClick={() => {
                             setSelect_1_id([]);
                             setSelect_2_id([]);
+                            setSuffled((prev) => !prev);
                         }}
                     />
                     <ModalBody>
