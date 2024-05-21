@@ -1,8 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Flex } from "@chakra-ui/react";
+import {
+    Box,
+    Flex,
+    Icon,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalOverlay,
+    useDisclosure,
+} from "@chakra-ui/react";
 import useImageData, { data_schema } from "../../hooks/useImageData";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ReactCardFlip from "react-card-flip";
+import { FaRegCheckCircle } from "react-icons/fa";
 
 const generate_random_numbers = (length = 0) => {
     const cache: { [key: string]: boolean } = {};
@@ -22,11 +33,12 @@ const generate_random_numbers = (length = 0) => {
     return randoms;
 };
 
-const select_1_id: string[] = [];
-const select_2_id: string[] = [];
-
 const ImageMatching = () => {
     const { data } = useImageData();
+
+    const [select_1_id, setSelect_1_id] = useState<string[]>([]);
+    const [select_2_id, setSelect_2_id] = useState<string[]>([]);
+
     const [select_1, setSelect_1] = useState<data_schema | null>(null);
     const [select_2, setSelect_2] = useState<data_schema | null>(null);
     const timeout_ref = useRef<number | null>(null);
@@ -35,7 +47,7 @@ const ImageMatching = () => {
         if (timeout_ref.current) {
             clearTimeout(timeout_ref.current);
         }
-        
+
         // check both selection state not null
         if (select_1 && select_2) {
             // check the first selection is not equal to the category of second selection
@@ -45,10 +57,10 @@ const ImageMatching = () => {
                     setSelect_2(null);
                 }, 500);
             }
-            // check the first selection is equal to the category of second selection 
+            // check the first selection is equal to the category of second selection
             else if (select_1.category_id === select_2.category_id) {
-                select_1_id.push(select_1._id);
-                select_2_id.push(select_2._id);
+                setSelect_1_id((prev) => [...prev, select_1._id]);
+                setSelect_2_id((prev) => [...prev, select_2._id]);
                 setSelect_1(null);
                 setSelect_2(null);
             }
@@ -60,36 +72,44 @@ const ImageMatching = () => {
     }, []);
 
     return (
-        <Flex
-            grow={0}
-            basis={"auto"}
-            maxWidth={"700px"}
-            shrink={1}
-            wrap={"wrap"}
-            justifyContent={"center"}
-            gap={2}
-        >
-            {data ? (
-                generate_random_indexes.map((random_index) => {
-                    return (
-                        <SingleImgCard
-                            key={random_index}
-                            data={data}
-                            random_index={random_index}
-                            firstSelect={select_1}
-                            secondSelect={select_2}
-                            firstSelectedArr={select_1_id}
-                            secondSelectedArr={select_2_id}
-                            onFirstSelect={setSelect_1}
-                            onSecondSelect={setSelect_2}
-                            canFlip={!select_1 || !select_2}
-                        />
-                    );
-                })
-            ) : (
-                <></>
-            )}
-        </Flex>
+        <>
+            <Flex
+                grow={0}
+                basis={"auto"}
+                maxWidth={"700px"}
+                shrink={1}
+                wrap={"wrap"}
+                justifyContent={"center"}
+                gap={2}
+            >
+                {data ? (
+                    generate_random_indexes.map((random_index) => {
+                        return (
+                            <SingleImgCard
+                                key={random_index}
+                                data={data}
+                                random_index={random_index}
+                                firstSelect={select_1}
+                                secondSelect={select_2}
+                                firstSelectedArr={select_1_id}
+                                secondSelectedArr={select_2_id}
+                                onFirstSelect={setSelect_1}
+                                onSecondSelect={setSelect_2}
+                                canFlip={!select_1 || !select_2}
+                            />
+                        );
+                    })
+                ) : (
+                    <></>
+                )}
+            </Flex>
+            <GratingsModal
+                select_1_id={select_1_id}
+                select_2_id={select_2_id}
+                setSelect_1_id={setSelect_1_id}
+                setSelect_2_id={setSelect_2_id}
+            />
+        </>
     );
 };
 
@@ -137,9 +157,6 @@ const SingleImgCard = ({
             flipDirection="horizontal"
         >
             <Box
-                as="img"
-                src={target.img}
-                alt={target.name}
                 boxSize={"150px"}
                 p={1.5}
                 borderRadius={10}
@@ -152,7 +169,35 @@ const SingleImgCard = ({
                         onSecondSelect(null);
                     }
                 }}
-            />
+                position={"relative"}
+            >
+                <Box
+                    as="img"
+                    src={target.img}
+                    alt={target.name}
+                    boxSize={"100%"}
+                    borderRadius={10}
+                />
+                {firstSelectedArr.find((select) => select === target._id) ||
+                secondSelectedArr.find((select) => select === target._id) ? (
+                    <Box
+                        position={"absolute"}
+                        top={0}
+                        right={0}
+                        bottom={0}
+                        left={0}
+                    >
+                        <Icon
+                            as={FaRegCheckCircle}
+                            boxSize={"100%"}
+                            p={5}
+                            color={"theme.orange"}
+                        />
+                    </Box>
+                ) : (
+                    <></>
+                )}
+            </Box>
             <Box
                 boxSize={"150px"}
                 p={1.5}
@@ -168,11 +213,48 @@ const SingleImgCard = ({
                         }
                     }
                 }}
-            >
-                {target._id}
-                <br />
-                {target.category_id}
-            </Box>
+            />
         </ReactCardFlip>
+    );
+};
+
+const GratingsModal = ({
+    select_1_id,
+    select_2_id,
+    setSelect_1_id,
+    setSelect_2_id,
+}: {
+    select_1_id: string[];
+    select_2_id: string[];
+    setSelect_1_id: React.Dispatch<React.SetStateAction<string[]>>;
+    setSelect_2_id: React.Dispatch<React.SetStateAction<string[]>>;
+}) => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
+    useEffect(() => {
+        if (select_1_id.length + select_2_id.length === 12) {
+            onOpen();
+        } else {
+            onClose();
+        }
+    }, [select_1_id, select_2_id]);
+    
+    return (
+        <>
+            <Modal isOpen={isOpen} onClose={onClose} isCentered>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalCloseButton
+                        onClick={() => {
+                            setSelect_1_id([]);
+                            setSelect_2_id([]);
+                        }}
+                    />
+                    <ModalBody>
+                        Congratulations!, You have matched all the image
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
+        </>
     );
 };
