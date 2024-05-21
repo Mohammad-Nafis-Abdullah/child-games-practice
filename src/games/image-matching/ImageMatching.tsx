@@ -160,7 +160,7 @@ const SingleImgCard = ({
                 boxSize={"150px"}
                 p={1.5}
                 borderRadius={10}
-                bg={"theme.darkGreen"}
+                bg={"blueviolet"}
                 cursor={"pointer"}
                 onClick={() => {
                     if (firstSelect?._id === target._id) {
@@ -191,7 +191,7 @@ const SingleImgCard = ({
                             as={FaRegCheckCircle}
                             boxSize={"100%"}
                             p={5}
-                            color={"theme.orange"}
+                            color={"orange"}
                         />
                     </Box>
                 ) : (
@@ -202,7 +202,7 @@ const SingleImgCard = ({
                 boxSize={"150px"}
                 p={1.5}
                 borderRadius={10}
-                bg={"theme.darkGreen"}
+                bg={"blueviolet"}
                 cursor={"pointer"}
                 onClick={() => {
                     if (canFlip) {

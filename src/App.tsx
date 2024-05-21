@@ -9,7 +9,7 @@ function App() {
     return (
         <Flex minHeight={"100vh"} direction={"column"}>
             <Flex
-                bg={"theme.darkGreen"}
+                bg={"skyblue"}
                 height={"100px"}
                 justifyContent={"center"}
                 alignItems={"center"}
