@@ -42,7 +42,9 @@ const ImageMatching = () => {
 
     const [select_1, setSelect_1] = useState<data_schema | null>(null);
     const [select_2, setSelect_2] = useState<data_schema | null>(null);
+
     const timeout_ref = useRef<number | null>(null);
+    const matched_sound_ref = useRef<HTMLAudioElement | null>();
 
     useEffect(() => {
         if (timeout_ref.current) {
@@ -60,6 +62,10 @@ const ImageMatching = () => {
             }
             // check the first selection is equal to the category of second selection
             else if (select_1.category_id === select_2.category_id) {
+                matched_sound_ref.current?.pause();
+                matched_sound_ref.current = null;
+                matched_sound_ref.current = new Audio("/audio/matched.wav");
+                matched_sound_ref.current?.play();
                 setSelect_1_id((prev) => [...prev, select_1._id]);
                 setSelect_2_id((prev) => [...prev, select_2._id]);
                 setSelect_1(null);
@@ -139,6 +145,12 @@ const SingleImgCard = ({
     canFlip: boolean;
 }) => {
     const target = data?.[random_index];
+    const sound_ref = useRef<HTMLAudioElement>();
+
+    useEffect(() => {
+        sound_ref.current = new Audio("/audio/click.wav");
+    }, []);
+
     return (
         <ReactCardFlip
             isFlipped={(() => {
@@ -165,6 +177,7 @@ const SingleImgCard = ({
                 bg={"blueviolet"}
                 cursor={"pointer"}
                 onClick={() => {
+                    sound_ref.current?.play();
                     if (firstSelect?._id === target._id) {
                         onFirstSelect(null);
                     } else if (secondSelect?._id === target._id) {
@@ -207,6 +220,7 @@ const SingleImgCard = ({
                 bg={"blueviolet"}
                 cursor={"pointer"}
                 onClick={() => {
+                    sound_ref.current?.play();
                     if (canFlip) {
                         if (!firstSelect) {
                             onFirstSelect(target);
@@ -234,9 +248,15 @@ const GratingsModal = ({
     setSuffled: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const gratings_sound_ref = useRef<HTMLAudioElement>();
+
+    useEffect(() => {
+        gratings_sound_ref.current = new Audio("/audio/win.wav");
+    }, []);
 
     useEffect(() => {
         if (select_1_id.length + select_2_id.length === 12) {
+            gratings_sound_ref.current?.play();
             onOpen();
         } else {
             onClose();
